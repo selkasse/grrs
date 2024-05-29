@@ -1,4 +1,4 @@
-use anyhow::{Context, Result};
+use anyhow::{anyhow, Context, Result};
 use clap::Parser;
 use std::fs::File;
 use std::io::BufReader;
@@ -12,10 +12,22 @@ struct Cli {
     path: std::path::PathBuf,
 }
 
+impl Cli {
+    /// Validates the Cli struct, ensuring `pattern` is not empty
+    pub fn validate(&self) -> Result<()> {
+        if self.pattern.is_empty() {
+            Err(anyhow!("pattern must not be empty"))
+        } else {
+            Ok(())
+        }
+    }
+}
+
 fn main() -> Result<()> {
     // the parse() method is provided by the clap::Parser trait
     // don't use this function outside of main()!
     let args = Cli::parse();
+    args.validate()?;
 
     // let file = File::open(&args.path)?;
     let file = File::open(&args.path)

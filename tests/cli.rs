@@ -38,6 +38,9 @@ fn empty_string_as_pattern() -> Result<(), Box<dyn std::error::Error>> {
 
     let mut cmd = Command::cargo_bin("grrs")?;
     cmd.arg("").arg(file.path());
+    cmd.assert()
+        .failure()
+        .stderr(predicate::str::contains("pattern must not be empty"));
 
     Ok(())
 }
